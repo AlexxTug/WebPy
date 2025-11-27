@@ -22,7 +22,6 @@ A fully client-side web application for processing magnetic sensor test (MST) da
 
 3. **Configure Mappings**
    - Edit the Sample Mapping (e.g., `1: L1C_31`)
-   - Edit the Axis Mapping (e.g., `1: XY`)
 
 4. **Process Data**
    - Click the "Process Data" button
@@ -35,7 +34,7 @@ A fully client-side web application for processing magnetic sensor test (MST) da
 
 ### What This App Does
 
-The application processes magnetic sensor test data with 2 sweeps (down-up):
+The application processes magnetic sensor test data with 2 sweeps (down-up) + other cases:
 - Skips sheets containing "precon" in the name
 - Processes data in groups of 5 rows (2 sweeps with overlapping points)
 - Calculates offset values (Off_DU)
