@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MST Data Processor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .privacy-notice {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .privacy-notice h3 {
+            color: #2e7d32;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .privacy-notice p {
+            color: #1b5e20;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-section h2 {
+            color: #444;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 20px;
+            background: #f5f5f5;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #eeeeee;
+            border-color: #667eea;
+        }
+
+        .file-input-label.has-file {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            border-style: solid;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .config-section {
+            margin-bottom: 30px;
+        }
+
+        .config-section h2 {
+            color: #444;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .mapping-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mapping-container h3 {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .process-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .process-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .process-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status.loading {
+            display: block;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .status.success {
+            display: block;
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .status.error {
+            display: block;
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #856404;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .download-btn {
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        /* Tab Styles */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+            background: #f5f5f5;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-description {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 MST Data Processor</h1>
+        <p class="subtitle">Process magnetic sensor test data</p>
+
+        <div class="privacy-notice">
+            <h3>🔒 Privacy & Security</h3>
+            <p>All processing happens entirely in your browser. Your Excel files never leave your computer - no data is uploaded to any server. This application runs 100% client-side using Python in WebAssembly.</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="up-down">Up-Down (2 sweeps)</button>
+            <button class="tab-btn" data-tab="a3">A3 Version (3 sweeps)</button>
+            <button class="tab-btn" data-tab="classic">Classic Version</button>
+        </div>
+
+        <div class="tab-content active" id="up-down">
+            <p class="tab-description">2 sweeps (down and up) with 5 data points. Skips "precon" sheets. Calculates only DU parameters.</p>
+        </div>
+        <div class="tab-content" id="a3">
+            <p class="tab-description">3 sweeps (up1, down, up2) with 7 data points. Skips "precon" sheets. Calculates U, UD, and DU parameters with drift detection.</p>
+        </div>
+        <div class="tab-content" id="classic">
+            <p class="tab-description">Simple 3-point groups. Skips "precon" sheets. Calculates K[mV/mT] parameter.</p>
+        </div>
+
+        <div class="upload-section">
+            <h2>1. Upload Input Excel File</h2>
+            <div class="file-input-wrapper">
+                <label for="fileInput" class="file-input-label" id="fileLabel">
+                    <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
+                    <div><strong>Click to select your input file!</strong></div>
+                    <div class="help-text">or drag and drop your Excel file here</div>
+                </label>
+                <input type="file" id="fileInput" accept=".xlsx,.xls">
+            </div>
+            <div class="file-info" id="fileInfo"></div>
+        </div>
+
+        <div class="config-section">
+            <h2>2. Configure Sample Mapping</h2>
+            
+            <div class="mapping-container">
+                <h3>Sample Mapping</h3>
+                <textarea id="sampleMapping" placeholder="Enter sample mappings (one per line):&#10;1: L1C_31&#10;2: L1C_33&#10;3: L1M_16">1: L1C_31
+2: L1C_33
+3: L1M_16
+4: L1M_34
+5: L1E_14
+6: L1E_16</textarea>
+                <div class="help-text">Format: number: name (e.g., "1: L1C_31")</div>
+            </div>
+        </div>
+
+        <button class="process-btn" id="processBtn" disabled>
+            Process Data
+        </button>
+
+        <div class="status" id="status"></div>
+        
+        <div style="margin-top: 20px; display: none;" id="consoleContainer">
+            <h3 style="color: #666; font-size: 14px; margin-bottom: 10px;">📋 Processing Log</h3>
+            <div id="consoleLog" style="background: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; padding: 15px; max-height: 300px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
