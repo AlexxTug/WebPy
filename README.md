@@ -9,7 +9,7 @@ A fully client-side web application for processing magnetic sensor test (MST) da
 - **No Installation Required**: No need to install Python or any dependencies
 - **Multiple Processing Modes**: Choose from Up-Down (2 sweeps), A3 (3 sweeps), or Classic (3 points) versions
 - **Easy to Use**: Simple drag-and-drop interface with tabbed navigation
-- **Configurable Mappings**: Customize sample and axis mappings directly in the UI
+- **Configurable Mappings**: Customize sample mapping directly in the UI
 - **Automatic Precon Skipping**: Automatically skips sheets containing "precon" in the name
 
 ## How to Use
