@@ -7,8 +7,10 @@ A fully client-side web application for processing magnetic sensor test (MST) da
 - **100% Client-Side Processing**: All Excel processing happens in your browser using Pyodide (Python compiled to WebAssembly)
 - **Complete Privacy**: Your confidential Excel files are never uploaded to any server
 - **No Installation Required**: No need to install Python or any dependencies
-- **Easy to Use**: Simple drag-and-drop interface
+- **Multiple Processing Modes**: Choose from Up-Down (2 sweeps), A3 (3 sweeps), or Classic (3 points) versions
+- **Easy to Use**: Simple drag-and-drop interface with tabbed navigation
 - **Configurable Mappings**: Customize sample and axis mappings directly in the UI
+- **Automatic Precon Skipping**: Automatically skips sheets containing "precon" in the name
 
 ## How to Use
 
@@ -16,32 +18,52 @@ A fully client-side web application for processing magnetic sensor test (MST) da
    - Simply open `index.html` in a modern web browser (Chrome, Firefox, Edge, Safari)
    - Wait for the Python environment to initialize (first load may take 1-2 minutes)
 
-2. **Upload Your Excel File**
+2. **Select Processing Mode**
+   - Choose from three tabs:
+     - **Up-Down**: 2 sweeps, 5 points per sweep (DU calculations only)
+     - **A3**: 3 sweeps, 7 points per sweep (U, UD, DU calculations)
+     - **Classic**: 3 points processing with K parameter
+
+3. **Upload Your Excel File**
    - Click on the upload area or drag and drop your `Book1.xlsx` file
    - The file is loaded into your browser's memory only
 
-3. **Configure Mappings**
+4. **Configure Mappings**
    - Edit the Sample Mapping (e.g., `1: L1C_31`)
-   - Edit the Axis Mapping (e.g., `1: XY`)
 
-4. **Process Data**
+5. **Process Data**
    - Click the "Process Data" button
    - Wait for processing to complete (usually takes 10-30 seconds)
 
-5. **Download Results**
+6. **Download Results**
    - Click the download button to save your processed Excel file
 
 ## Technical Details
 
 ### What This App Does
 
-The application processes magnetic sensor test data with 2 sweeps (down-up):
-- Skips sheets containing "precon" in the name
-- Processes data in groups of 5 rows (2 sweeps with overlapping points)
-- Calculates offset values (Off_DU)
-- Calculates sensitivity values (Sens_DU)
-- Calculates drift values for both offset and sensitivity
-- Generates summary sheets with out-of-limit violations
+The application offers three processing modes:
+
+**Up-Down Mode** (2 sweeps, 5 points):
+- Processes data in groups of 5 rows (2 down-up sweeps with overlapping points)
+- Calculates offset values (Off_DU[mV])
+- Calculates sensitivity values (Sens_DU[mV/mT])
+- Calculates drift values for both offset (Off_drift_DU[mV]) and sensitivity (Sens_drift_DU[%])
+- Generates Summary sheet with out-of-limit violations:
+  - Off_drift_DU: flags values outside ±2.5mV at 47mT Set field (Stress < 120mT)
+  - Sens_drift_DU: flags values outside ±3% (Stress < 120mT)
+
+**A3 Mode** (3 sweeps, 7 points):
+- Processes data in groups of 7 rows (3 sweeps with overlapping points)
+- Calculates U, UD, and DU values for offset and sensitivity
+- Includes drift calculations for all modes
+
+**Classic Mode** (3 points):
+- Processes data in groups of 3 rows
+- Calculates K parameter
+- Includes standard offset and sensitivity calculations
+
+All modes automatically skip sheets containing "precon" in the name.
 
 ### Browser Compatibility
 
