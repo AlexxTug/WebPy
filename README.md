@@ -30,7 +30,6 @@ A fully client-side web application for processing magnetic sensor test (MST) da
 
 4. **Configure Mappings**
    - Edit the Sample Mapping (e.g., `1: L1C_31`)
-   - Edit the Axis Mapping (e.g., `1: XY`)
 
 5. **Process Data**
    - Click the "Process Data" button
